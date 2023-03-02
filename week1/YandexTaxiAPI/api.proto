@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+enum PaymentType {
+  CASH = 0;
+  CARD = 1;
+}
+
+message User {
+  int64 ID = 1;
+  string username = 2;
+  string firstName = 3;
+  string lastName = 4;
+  int32 rating = 5;
+  string phone = 6;
+  PaymentType paymentType = 7;
+}
+
+enum Tariff {
+  ECONOMY = 0;
+  COMFORT = 1;
+  BUSINESS = 2;
+}
+
+message Driver {
+  int64 ID = 1;
+  string username = 2;
+  string firstName = 3;
+  string lastName = 4;
+  int32 rating = 5;
+  string phone = 6;
+  string car = 7;
+  Tariff tariff = 8;
+}
+
+message Ride {
+  int64 ID = 1;
+  repeated string points = 2;
+  int64 estimatedTime = 3;
+  int64 price = 4;
+  Tariff tariff = 5;
+}
+
+message Points {
+  repeated string points = 1;
+}
+
+message RideID {
+  int64 ID = 1;
+}
+
+message UserID {
+  int64 ID = 1;
+}
+
+message DriverID {
+  int64 ID = 1;
+}
+
+message RideReq {
+  int64 userID = 1;
+  Tariff tariff = 2;
+  Points points = 3;
+}
+
+message HistoryReq {
+  int64 userID = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+message Result {
+  bool success = 1;
+}
+
+message DriversStatus {
+  int32 totalDrivers = 1;
+  int32 inDrive = 2;
+  int32 avgRideDurationPerHour = 3;
+}
+
+message RidesHistory {
+  repeated Ride rides = 1;
+  int32 limit = 2;
+  int32 offset = 3;
+}
+
+
+service Taxi {
+  rpc GetUser(UserID) returns (User) {}
+  rpc GetDriver(DriverID) returns (Driver) {}
+
+  rpc UpdateUser(UserID) returns (Result) {}
+  rpc UpdateDriver(DriverID) returns (Result) {}
+
+  rpc GetDriversStatus(google.protobuf.Empty) returns (DriversStatus) {}
+
+  rpc CalcRide(RideReq) returns ( Ride ) {}
+  rpc StartRide(RideReq) returns ( Ride ) {}
+  rpc RateRide(RideID) returns ( Result ) {}
+
+  rpc GetRidesHistory(HistoryReq) returns ( RidesHistory ) {}
+}
