@@ -14,7 +14,6 @@ message User {
   string lastName = 4;
   int32 rating = 5;
   string phone = 6;
-  PaymentType paymentType = 7;
 }
 
 enum Tariff {
@@ -31,37 +30,31 @@ message Driver {
   int32 rating = 5;
   string phone = 6;
   string car = 7;
-  Tariff tariff = 8;
 }
 
 message Ride {
-  int64 ID = 1;
-  repeated string points = 2;
-  int64 estimatedTime = 3;
-  int64 price = 4;
-  Tariff tariff = 5;
-}
-
-message Points {
-  repeated string points = 1;
+  int64 estimatedTime = 1;
+  int64 price = 2;
+  Tariff tariff = 3;
 }
 
 message RideID {
   int64 ID = 1;
 }
 
-message UserID {
-  int64 ID = 1;
+message Point {
+  float lat = 1;
+  float lon = 2;
 }
 
-message DriverID {
+message ReqID {
   int64 ID = 1;
 }
 
 message RideReq {
   int64 userID = 1;
   Tariff tariff = 2;
-  Points points = 3;
+  repeated Point points = 3;
 }
 
 message HistoryReq {
@@ -70,14 +63,8 @@ message HistoryReq {
   int32 offset = 3;
 }
 
-message Result {
-  bool success = 1;
-}
-
 message DriversStatus {
-  int32 totalDrivers = 1;
-  int32 inDrive = 2;
-  int32 avgRideDurationPerHour = 3;
+  float demandIndex = 1;
 }
 
 message RidesHistory {
@@ -88,17 +75,17 @@ message RidesHistory {
 
 
 service Taxi {
-  rpc GetUser(UserID) returns (User) {}
-  rpc GetDriver(DriverID) returns (Driver) {}
+  rpc GetUser(ReqID) returns (User) {}
+  rpc GetDriver(ReqID) returns (Driver) {}
 
-  rpc UpdateUser(UserID) returns (Result) {}
-  rpc UpdateDriver(DriverID) returns (Result) {}
+  rpc UpdateUser(ReqID) returns (google.protobuf.Empty) {}
+  rpc UpdateDriver(ReqID) returns (google.protobuf.Empty) {}
 
   rpc GetDriversStatus(google.protobuf.Empty) returns (DriversStatus) {}
 
   rpc CalcRide(RideReq) returns ( Ride ) {}
-  rpc StartRide(RideReq) returns ( Ride ) {}
-  rpc RateRide(RideID) returns ( Result ) {}
+  rpc StartRide(RideReq) returns ( RideID ) {}
+  rpc RateRide(ReqID) returns ( google.protobuf.Empty ) {}
 
   rpc GetRidesHistory(HistoryReq) returns ( RidesHistory ) {}
 }

@@ -262,10 +262,6 @@ components:
         phone:
           type: string
           example: '+79851234567'
-        paymentType:
-          type: integer
-          format: int32
-          example: 1
       xml:
         name: user
     Driver:
@@ -294,10 +290,6 @@ components:
         car:
           type: string
           example: 'Peugeot 406'
-        tarif:
-          type: integer
-          format: int
-          example: 1
       xml:
         name: driver
 
@@ -332,11 +324,17 @@ components:
         points:
           $ref: '#/components/schemas/Points'
 
+    Point:
+      type: array
+      items:
+        type: number
+      example: [55.756128425649536, 37.81237258070741]
+
     Points:
       type: array
       items:
-        type: string
-      example: ["ул. Рябиновая, 1", "Кленовый переулок, 2", "ул. Калиновая, 3"]
+        $ref: '#/components/schemas/Point'
+      example: [[55.756128425649536, 37.81237258070741], [55.761923796383805, 37.59985579302037]]
 
     ApiResponse:
       type: object
@@ -376,15 +374,9 @@ components:
             body:
               type: object
               properties:
-                totalDrivers:
-                  type: integer
-                  example: 100
-                inDrive:
-                  type: integer
-                  example: 33
-                avgRideDurationPerHour:
-                  type: integer
-                  example: 2455
+                demandIndex:
+                  type: number
+                  example: 0.5
 
     RideResponse:
       type: object

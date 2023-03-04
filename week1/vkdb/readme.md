@@ -19,7 +19,7 @@
 id
 name
 description
-photo
+photo_url
 city_id
 interests
 ```
@@ -31,17 +31,13 @@ name
 ```
 
 #### relationships
+Используем графовую бд
 ```
-id
-primary_user_id
-secondary_user_id
-relationship_type_id
-```
+User
+ user_id
 
-#### relationship_type
-```
-id
-name
+User -- friends_with --> User
+User -- is_following --> User
 ```
 
 #### groups
@@ -53,7 +49,7 @@ owneer_id
 
 #### group_users
 ```
-id
+group_id
 user_id
 ```
 
@@ -67,9 +63,9 @@ description
 
 #### chat_users
 ```
-id
 chat_id
 user_id
+lastseen // timestamp
 ```
 
 #### messages
@@ -81,20 +77,12 @@ text
 created_at
 ```
 
-#### messages_meta
-```
-id
-message_id
-user_id
-read_status
-```
-
 #### posts
 ```
 id
 user_id
 group_id
-status
+status // опубликовано/отложено
 description
 created_at
 ```
@@ -103,8 +91,14 @@ created_at
 ```
 id
 post_id
-likes
 views
+```
+
+#### posts_likes
+```
+post_id
+user_id
+... сюда ещё можно тип реакции поставить
 ```
 
 #### media
@@ -112,27 +106,14 @@ views
 id
 post_id
 url
-media_type_id
-created_at
-```
-
-#### media_types
-```
-id
-name
+media_type // tinyint
 ```
 
 #### tags
 ```
 id
-name
-```
-
-#### post_tags
-```
-id
-tag_id
 post_id
+name
 ```
 
 #### comments
