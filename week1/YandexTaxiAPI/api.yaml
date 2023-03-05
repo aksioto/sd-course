@@ -1,0 +1,492 @@
+openapi: 3.0.3
+info:
+  title: Yandex Taxi API
+  description: |-
+    Домашка по System design
+  version: 1.0.0
+tags:
+  - name: user
+    description: Юзер
+  - name: driver
+    description: Водитель
+  - name: rides
+    description: Поездки
+paths:
+  /users/{userId}:
+    get:
+      tags:
+        - user
+      summary: Получить данные о юзере
+      parameters:
+        - name: userId
+          in: path
+          description: ID юзера
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUserResponse'
+        '400':
+          description: Invalid ID
+        '404':
+          description: User not found
+        '500':
+          description: Server error
+    put:
+      tags:
+        - user
+      summary: Обновить данные юзера
+      parameters:
+        - name: userId
+          in: path
+          description: ID of user to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestUserBody'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: Invalid ID
+        '404':
+          description: User not found
+        '500':
+          description: Server error
+
+  /rides:
+    post:
+      tags:
+        - rides
+      summary: Новая поездка
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideRequesBody'
+      responses:
+        '201':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideResponse'
+        '400':
+          description: Invalid request body
+        '500':
+          description: Server error
+
+  /rides/calc:
+    post:
+      tags:
+        - rides
+      summary: Рассчёт стоимости поездки
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RideRequesBody'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideCalcResponse'
+        '400':
+          description: Invalid request body
+        '500':
+          description: Server error
+
+  /rides/{rideId}/rate:
+    put:
+      tags:
+        - rides
+      summary: Оценить поездку
+      parameters:
+        - name: rideId
+          in: path
+          description: ID поездки
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateRideRequesBody'
+      responses:
+        '204':
+          description: Success
+        '400':
+          description: Invalid request body
+        '500':
+          description: Server error
+
+  /rides/history:
+    get:
+      tags:
+        - rides
+      summary: Получить историю поездок
+      parameters:
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+            format: int
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RideHistoryResponse'
+        '400':
+          description: Invalid ID
+        '404':
+          description: User not found
+        '500':
+          description: Server error
+
+  /drivers/{driverId}:
+    get:
+      tags:
+        - driver
+      summary: Получить данные о водителе
+      parameters:
+        - name: driverId
+          in: path
+          description: ID водителя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDriverResponse'
+        '400':
+          description: Invalid ID
+        '404':
+          description: Driver not found
+        '500':
+          description: Server error
+    put:
+      tags:
+        - driver
+      summary: Обновить данные водителя
+      parameters:
+        - name: driverId
+          in: path
+          description: ID водителя
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RequestDriverBody'
+      responses:
+        '204':
+          description: Successful operation
+        '400':
+          description: Invalid ID
+        '404':
+          description: Driver not found
+        '500':
+          description: Server error
+
+  /drivers/status:
+    get:
+      tags:
+        - driver
+      summary: Получить данные о загруженности водителей
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetDriverStatusResponse'
+        '404':
+          description: Drivers not found
+        '500':
+          description: Server error
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: Эмильен
+        lastName:
+          type: string
+          example: Кутан-Корбадек
+        rating:
+          type: integer
+          format: int
+          example: 5
+        phone:
+          type: string
+          example: '+79851234567'
+      xml:
+        name: user
+    Driver:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theDriver
+        firstName:
+          type: string
+          example: Даниэль
+        lastName:
+          type: string
+          example: Моралес
+        rating:
+          type: integer
+          format: int
+          example: 5
+        phone:
+          type: string
+          example: '+79851234567'
+        car:
+          type: string
+          example: 'Peugeot 406'
+      xml:
+        name: driver
+
+    Ride:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 102030
+        status:
+          type: integer
+          format: int
+          example: 1
+        price:
+          type: integer
+          format: int64
+          example: 1200
+        startTime:
+          type: integer
+          format: int32
+          example: 3600
+        tarif:
+          type: integer
+          format: int
+          example: 1
+        paymentType:
+          type: integer
+          format: int
+          example: 1
+
+        points:
+          $ref: '#/components/schemas/Points'
+
+    Point:
+      type: array
+      items:
+        type: number
+      example: [55.756128425649536, 37.81237258070741]
+
+    Points:
+      type: array
+      items:
+        $ref: '#/components/schemas/Point'
+      example: [[55.756128425649536, 37.81237258070741], [55.761923796383805, 37.59985579302037]]
+
+    ApiResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          format: int32
+          example: 200
+        body:
+          type: object
+      required:
+        - status
+        - body
+      xml:
+        name: '##default'
+
+    GetUserResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              $ref: '#/components/schemas/User'
+    GetDriverResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              $ref: '#/components/schemas/Driver'
+
+    GetDriverStatusResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              type: object
+              properties:
+                demandIndex:
+                  type: number
+                  example: 0.5
+
+    RideResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              type: object
+              properties:
+                rideID:
+                  type: integer
+                  format: int64
+                  example: 102030
+
+    RideCalcResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              type: object
+              properties:
+                price:
+                  type: integer
+                  format: int64
+                  example: 1200
+                estimatedTime:
+                  type: integer
+                  format: int64
+                  example: 3600
+                points:
+                  $ref: '#/components/schemas/Points'
+
+    RideHistoryResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/ApiResponse'
+        - properties:
+            body:
+              type: object
+              properties:
+                rides:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Ride'
+                limit:
+                  type: integer
+                  example: 10
+                offset:
+                  type: integer
+                  example: 0
+
+
+    RequestUserBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: Эмильен
+        lastName:
+          type: string
+          example: Кутан-Корбадек
+        phone:
+          type: string
+          example: '+79851234567'
+        paymentType:
+          type: integer
+          format: int32
+          example: 1
+
+    RequestDriverBody:
+      type: object
+      properties:
+        username:
+          type: string
+          example: theUser
+        firstName:
+          type: string
+          example: Эмильен
+        lastName:
+          type: string
+          example: Кутан-Корбадек
+        phone:
+          type: string
+          example: '+79851234567'
+        car:
+          type: string
+          example: 'Peugeot 406'
+
+    RideRequesBody:
+      type: object
+      properties:
+        userID:
+          type: integer
+          format: int64
+          example: 10
+        tarif:
+          type: integer
+          format: int
+          example: 1
+        points:
+          $ref: '#/components/schemas/Points'
+
+    RateRideRequesBody:
+      type: object
+      properties:
+        rating:
+          type: integer
+          format: int
+          example: 5
