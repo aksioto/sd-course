@@ -386,22 +386,10 @@ components:
             body:
               type: object
               properties:
-                status:
-                  type: integer
-                  format: int
-                  example: 1
                 rideID:
                   type: integer
                   format: int64
                   example: 102030
-                price:
-                  type: integer
-                  format: int64
-                  example: 1200
-                estimatedTime:
-                  type: integer
-                  format: int64
-                  example: 3600
 
     RideCalcResponse:
       type: object
@@ -419,6 +407,8 @@ components:
                   type: integer
                   format: int64
                   example: 3600
+                points:
+                  $ref: '#/components/schemas/Points'
 
     RideHistoryResponse:
       type: object

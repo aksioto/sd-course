@@ -36,6 +36,7 @@ message Ride {
   int64 estimatedTime = 1;
   int64 price = 2;
   Tariff tariff = 3;
+  repeated Point points = 4;
 }
 
 message RideID {

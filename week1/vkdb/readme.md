@@ -19,7 +19,7 @@
 id
 name
 description
-photo_url
+blob_id
 city_id
 interests
 ```
@@ -105,7 +105,7 @@ user_id
 ```
 id
 post_id
-url
+blob_id
 media_type // tinyint
 ```
 
